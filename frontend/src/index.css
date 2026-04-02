@@ -1,0 +1,41 @@
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+body {
+  font-family: "Inter", "Poppins", sans-serif;
+  background: #ffffff00;
+  color: #e0ddf5;
+  min-height: 100vh;
+}
+.hero {
+  min-height: 88vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  padding: 60px 24px;
+  background: linear-gradient(160deg, rgba(20, 10, 48, 0.755) 0%, rgba(40,0,80,0.85) 100%), url("/heroPic.jpeg") center/cover no-repeat;
+}
+.light-page .navbar {
+  background: rgba(255, 255, 255, 0.953);
+  backdrop-filter: blur(20px);
+  border-bottom: 3px solid rgb(124, 58, 237);
+}
+
+.nav-links { list-style: none; display: flex; gap: 28px; }
+.nav-links li { cursor: pointer; font-weight: 500; font-size: 14px; color: #b8b5d4; transition: color 0.2s; }
+.nav-links li:hover, .nav-links li a:hover { color: #c5a3ff; }
+.nav-links li a { color: inherit; text-decoration: none; }
+.light-page .logo-text { color: #6d28d9; }
+.light-page .nav-links li { color: #4c4480; }
+.light-page .search-box { background: rgba(255,255,255,0.9); border-color: rgba(124, 58, 237, 0.38); }
+.light-page .search-box input { color: #000000; }
+.light-page .search-box input::placeholder { color: #9ca3af; }
+.light-page .login-btn { border-color: rgba(109,40,217,0.35); color: #6d28d9; }
+.light-page .login-btn:hover { background: rgba(109,40,217,0.08); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0f0d24; }
+::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 4px; }
+
+
+
+
