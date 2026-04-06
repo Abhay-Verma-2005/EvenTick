@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {FaSearch, FaBuilding, FaCalendarAlt, FaTicketAlt, FaQrcode,FaShieldAlt, FaInstagram, FaTwitter, FaLinkedin, FaGithub,FaMapMarkerAlt, FaArrowRight, FaCompass, FaCheckCircle, FaStar} from "react-icons/fa";
+import {FaSearch, FaBuilding, FaCalendarAlt, FaTicketAlt, FaQrcode,FaShieldAlt, FaInstagram, FaLinkedin, FaGithub,FaMapMarkerAlt, FaArrowRight, FaCompass, FaCheckCircle, FaStar} from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import Navbar from "./Navbar";
 import "./styles/home.css";
 
@@ -97,10 +98,10 @@ const FooterSection = () => (
         </Link>
         <p>All-in-one platform for events.</p>
         <div className="socials">
-          <FaInstagram />
-          <FaTwitter />
-          <FaLinkedin />
-          <FaGithub />
+          <FaInstagram onClick={() => window.open("https://www.instagram.com/the_a.b.h.a.y", "_blank")} />
+          <FaXTwitter onClick={() => window.open("https://www.twitter.com/ABHAYVERMA78471", "_blank")} />
+          <FaLinkedin onClick={() => window.open("https://www.linkedin.com/in/abhay-verma-990735281/", "_blank")} />
+          <FaGithub onClick={() => window.open("https://www.github.com/Abhay-Verma-2005/", "_blank")} />
         </div>
       </div>
 
