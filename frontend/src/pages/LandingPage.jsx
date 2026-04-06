@@ -62,7 +62,7 @@ const FEATURES = [
   { icon: FaCalendarAlt, title: "Event Management", desc: "Create and manage events easily." },
   { icon: FaTicketAlt, title: "Digital Booking", desc: "Real-time ticket booking system." },
   { icon: FaQrcode, title: "QR E-Ticket", desc: "Instant secure QR tickets." },
-  { icon: FaShieldAlt, title: "RBAC Security", desc: "Role-based secure access." }
+  { icon: FaShieldAlt, title: "Auth Security", desc: "Role-based secure access." }
 ];
 
 const FeaturesSection = () => (
