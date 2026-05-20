@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "/api/v1",
+  baseURL: import.meta.env.DEV ? "/api/v1" : "https://even-tick-backend.onrender.com/api/v1",
 });
 
 apiClient.interceptors.request.use(

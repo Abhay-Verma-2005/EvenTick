@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://even-tick-backend.onrender.com',
         changeOrigin: true,
       },
     },

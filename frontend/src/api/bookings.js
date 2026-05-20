@@ -14,3 +14,8 @@ export const cancelTicket = async (ticketId) => {
   const { data } = await apiClient.patch(`/bookings/${ticketId}/cancel`);
   return data;
 };
+
+export const processRefund = async (bookingId) => {
+  const { data } = await apiClient.post("/bookings/process-refund", { bookingId });
+  return data;
+};

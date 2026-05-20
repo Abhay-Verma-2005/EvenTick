@@ -32,3 +32,24 @@ export const addVenueReview = async (id, rating, text) => {
   const { data } = await apiClient.post(`/venues/${id}/review`, { rating, text });
   return data;
 };
+
+
+export const getVenueBookings = async (venueId) => {
+  const { data } = await apiClient.get(`/venues/${venueId}/bookings`);
+  return data;
+};
+
+export const bookVenue = async (venueId, { eventId, startDate, endDate }) => {
+  const { data } = await apiClient.post(`/venues/${venueId}/book`, { eventId, startDate, endDate });
+  return data;
+};
+
+export const acceptVenueBooking = async (venueId, bookingId) => {
+  const { data } = await apiClient.patch(`/venues/${venueId}/booking/${bookingId}/accept`);
+  return data;
+};
+
+export const rejectVenueBooking = async (venueId, bookingId) => {
+  const { data } = await apiClient.patch(`/venues/${venueId}/booking/${bookingId}/reject`);
+  return data;
+};
