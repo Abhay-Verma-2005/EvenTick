@@ -1,25 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {FaSearch, FaBuilding, FaCalendarAlt, FaTicketAlt, FaQrcode,FaShieldAlt, FaInstagram, FaLinkedin, FaGithub,FaMapMarkerAlt, FaArrowRight, FaCompass, FaCheckCircle, FaStar} from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import Navbar from "./Navbar";
 import "./styles/home.css";
+import { getFeedbackSummary } from "../api/feedback";
 
 const LandingPage = () => (
   <div className="main-container">
     <Navbar />
     <HeroSection />
     <FeaturesSection />
+    <FeedbackSection />
     <FooterSection />
   </div>
 );
 
 const HeroSection = () => {
-  const [city, setCity] = useState("");
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (city.trim()) navigate(`/events?city=${encodeURIComponent(city.trim())}`);
+    if (query.trim()) navigate(`/events?search=${encodeURIComponent(query.trim())}`);
     else navigate("/events");
   };
 
@@ -37,10 +39,10 @@ const HeroSection = () => {
       <div className="search-bar">
         <FaMapMarkerAlt className="icon" />
         <input
-          value={city}
-          onChange={e => setCity(e.target.value)}
+          value={query}
+          onChange={e => setQuery(e.target.value)}
           onKeyDown={e => e.key === "Enter" && handleSearch()}
-          placeholder="Where are you looking?"
+          placeholder="Search by event or city..."
         />
         <button onClick={handleSearch} className="search-btn">
           <FaSearch /> 
@@ -86,6 +88,68 @@ const FeaturesSection = () => (
     </div>
   </section>
 );
+
+const FeedbackSection = () => {
+  const [data, setData] = useState({ averageRating: 0, totalReviews: 0, topComments: [] });
+  
+  useEffect(() => {
+    getFeedbackSummary().then(res => {
+      if (res.success) setData(res.data);
+    }).catch(err => console.error(err));
+  }, []);
+
+
+  return (
+    <section className="feedback-section">
+      <div className="feedback-header">
+        <p className="tag"><FaStar /> PEOPLE'S THOUGHT SUITE</p>
+        <h2>People's Thoughts</h2>
+        {data.totalReviews > 0 ? (
+          <div className="feedback-stats-pill">
+            <div className="feedback-stars-row">
+              {[...Array(5)].map((_, i) => (
+                <FaStar key={i} color={i < Math.round(data.averageRating) ? '#eab308' : '#e2e8f0'} />
+              ))}
+            </div>
+            <div className="feedback-divider" />
+            <span className="feedback-avg">{data.averageRating}</span>
+            <span className="feedback-count">({data.totalReviews} global reviews)</span>
+          </div>
+        ) : (
+          <p className="lp-no-reviews">Be the first to experience and review Eventick!</p>
+        )}
+      </div>
+      
+      {data.topComments.length > 0 && (
+        <div className="testimonial-grid">
+          {data.topComments.map(comment => (
+            <div key={comment._id} className="testimonial-card">
+              <div className="testimonial-quote">"</div>
+              
+              <div className="testimonial-stars">
+                {[...Array(comment.rating)].map((_, i) => <FaStar key={i} />)}
+              </div>
+              
+              <p className="testimonial-text">
+                "{comment.comment}"
+              </p>
+              
+              <div className="testimonial-footer">
+                <div className="testimonial-avatar">
+                  {comment.userName.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <strong className="testimonial-name">{comment.userName}</strong>
+                  <span className="testimonial-role">{comment.role}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
 
 
 const FooterSection = () => (
