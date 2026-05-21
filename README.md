@@ -157,6 +157,17 @@ http://localhost:5173
 
 ---
 
+# Future Advancements
+
+- Improve platform scalability to handle high traffic and large-scale event bookings efficiently  
+- CDN integration for faster asset delivery, better loading speed, and improved global performance  
+- Advanced QR verification system with secure, real-time ticket validation and fraud detection  
+- AI-powered event recommendation and smart search system for personalized user experience  
+- Event coaching and organizer assistance tools for better event planning and management  
+- Mobile app support with real-time notifications, analytics dashboard, and payment gateway integration
+
+---
+
 # About Developer
 
 ### Abhay Verma
