@@ -1,5 +1,6 @@
 import axios from "axios";
-const API_BASE = (import.meta.env.DEV ? "/api/v1" : "https://even-tick-backend.onrender.com/api/v1") + "/auth";
+
+const API_BASE = "/api/v1/auth";
 export const registerUser = async (name, email, password, role = "USER") => {
   const response = await axios.post(`${API_BASE}/register`, {
     name,

@@ -31,11 +31,6 @@ export const getEventAttendees = async (id) => {
   return data;
 };
 
-export const getPendingRefunds = async (id) => {
-  const { data } = await apiClient.get(`/events/${id}/pending-refunds`);
-  return data;
-};
-
 export const likeEvent = async (id) => {
   const { data } = await apiClient.post(`/events/${id}/like`);
   return data;
@@ -48,15 +43,5 @@ export const saveEvent = async (id) => {
 
 export const commentOnEvent = async (id, text) => {
   const { data } = await apiClient.post(`/events/${id}/comment`, { text });
-  return data;
-};
-
-export const toggleAttendance = async (eventId, ticketId, attended) => {
-  const { data } = await apiClient.patch(`/events/${eventId}/attendance/${ticketId}`, { attended });
-  return data;
-};
-
-export const scanQR = async (eventId, qrData) => {
-  const { data } = await apiClient.post(`/events/${eventId}/scan`, { qrData });
   return data;
 };

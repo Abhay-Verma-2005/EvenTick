@@ -6,15 +6,8 @@ const commentSchema = new mongoose.Schema({
   text:   { type: String, required: true },
 }, { timestamps: true });
 
-const attendeeSchema = new mongoose.Schema({
-  userId:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  ticketId: { type: mongoose.Schema.Types.ObjectId, ref: 'Booking', required: true },
-  qrCode:   { type: String, default: '' },
-  status:   { type: String, enum: ['attended', 'absent', 'cancelled'], default: 'absent' },
-}, { _id: false });
-
 const eventSchema = new mongoose.Schema({
-  organiserId:   { type: mongoose.Schema.Types.ObjectId, ref: 'Organiser', required: true },
+  organiserId:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   venueId:       { type: mongoose.Schema.Types.ObjectId, ref: 'Venue', required: true },
   title:         { type: String, required: true },
   description:   { type: String, required: true },
@@ -31,8 +24,6 @@ const eventSchema = new mongoose.Schema({
   status:        { type: String, enum: ['Draft', 'Live', 'Completed'], default: 'Draft' },
   likes:         [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   comments:      [commentSchema],
-  attendees:     [attendeeSchema],
-  cancellationAllowed: { type: Boolean, default: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);

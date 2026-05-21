@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {FaSearch, FaBuilding, FaCalendarAlt, FaTicketAlt, FaQrcode,FaShieldAlt, FaInstagram, FaLinkedin, FaGithub,FaMapMarkerAlt, FaArrowRight, FaCompass, FaCheckCircle, FaStar} from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import {FaSearch, FaBuilding, FaCalendarAlt, FaTicketAlt, FaQrcode,FaShieldAlt, FaInstagram, FaTwitter, FaLinkedin, FaGithub,FaMapMarkerAlt, FaArrowRight, FaCompass, FaCheckCircle, FaStar, FaRegStar, FaPaperPlane} from "react-icons/fa";
 import Navbar from "./Navbar";
+import { useAuth } from "../context/AuthContext";
+import apiClient from "../api/apiClient";
 import "./styles/home.css";
-import { getFeedbackSummary } from "../api/feedback";
 
 const LandingPage = () => (
   <div className="main-container">
     <Navbar />
     <HeroSection />
     <FeaturesSection />
-    <FeedbackSection />
+    <TestimonialsSection />
     <FooterSection />
   </div>
 );
 
 const HeroSection = () => {
-  const [query, setQuery] = useState("");
+  const [city, setCity] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    if (query.trim()) navigate(`/events?search=${encodeURIComponent(query.trim())}`);
+    if (city.trim()) navigate(`/events?city=${encodeURIComponent(city.trim())}`);
     else navigate("/events");
   };
 
@@ -39,10 +39,10 @@ const HeroSection = () => {
       <div className="search-bar">
         <FaMapMarkerAlt className="icon" />
         <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
+          value={city}
+          onChange={e => setCity(e.target.value)}
           onKeyDown={e => e.key === "Enter" && handleSearch()}
-          placeholder="Search by event or city..."
+          placeholder="Where are you looking?"
         />
         <button onClick={handleSearch} className="search-btn">
           <FaSearch /> 
@@ -64,7 +64,7 @@ const FEATURES = [
   { icon: FaCalendarAlt, title: "Event Management", desc: "Create and manage events easily." },
   { icon: FaTicketAlt, title: "Digital Booking", desc: "Real-time ticket booking system." },
   { icon: FaQrcode, title: "QR E-Ticket", desc: "Instant secure QR tickets." },
-  { icon: FaShieldAlt, title: "Auth Security", desc: "Role-based secure access." }
+  { icon: FaShieldAlt, title: "RBAC Security", desc: "Role-based secure access." }
 ];
 
 const FeaturesSection = () => (
@@ -89,68 +89,133 @@ const FeaturesSection = () => (
   </section>
 );
 
-const FeedbackSection = () => {
-  const [data, setData] = useState({ averageRating: 0, totalReviews: 0, topComments: [] });
-  
-  useEffect(() => {
-    getFeedbackSummary().then(res => {
-      if (res.success) setData(res.data);
-    }).catch(err => console.error(err));
-  }, []);
+const TestimonialsSection = () => {
+  const { isAuthenticated } = useAuth();
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [msg, setMsg] = useState("");
 
+  const loadFeedback = async () => {
+    try {
+      const res = await apiClient.get("/feedback");
+      if (Array.isArray(res.data)) setFeedbacks(res.data);
+    } catch {}
+  };
+
+  useEffect(() => { loadFeedback(); }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!text.trim()) return;
+    setSubmitting(true);
+    setMsg("");
+    try {
+      await apiClient.post("/feedback/submit", { rating, text });
+      setMsg("Thank you for your feedback!");
+      setText("");
+      setRating(5);
+      loadFeedback();
+    } catch (err) {
+      setMsg(err.response?.data?.message || "Error submitting feedback.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const displayList = [...feedbacks]
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 3);
+  const avgRating = feedbacks.length > 0
+    ? (feedbacks.reduce((sum, t) => sum + t.rating, 0) / feedbacks.length).toFixed(1)
+    : null;
 
   return (
-    <section className="feedback-section">
-      <div className="feedback-header">
-        <p className="tag"><FaStar /> PEOPLE'S THOUGHT SUITE</p>
-        <h2>People's Thoughts</h2>
-        {data.totalReviews > 0 ? (
-          <div className="feedback-stats-pill">
-            <div className="feedback-stars-row">
-              {[...Array(5)].map((_, i) => (
-                <FaStar key={i} color={i < Math.round(data.averageRating) ? '#eab308' : '#e2e8f0'} />
+    <section className="testimonials">
+      <div className="testimonials-header">
+        <p className="tag"><FaStar /> PEOPLE'S THOUGHTS</p>
+        <h2>Testimonials & Community Reviews</h2>
+        {avgRating && (
+          <div className="rating-badge">
+            <span className="rating-num">{avgRating}</span>
+            <span className="rating-label">/ 5 Average Rating</span>
+            <div className="star-row">
+              {[1, 2, 3, 4, 5].map(n => (
+                <FaStar key={n} color={n <= Math.round(Number(avgRating)) ? "#fbbf24" : "#e5e7eb"} />
               ))}
             </div>
-            <div className="feedback-divider" />
-            <span className="feedback-avg">{data.averageRating}</span>
-            <span className="feedback-count">({data.totalReviews} global reviews)</span>
           </div>
-        ) : (
-          <p className="lp-no-reviews">Be the first to experience and review Eventick!</p>
         )}
       </div>
-      
-      {data.topComments.length > 0 && (
-        <div className="testimonial-grid">
-          {data.topComments.map(comment => (
-            <div key={comment._id} className="testimonial-card">
-              <div className="testimonial-quote">"</div>
-              
-              <div className="testimonial-stars">
-                {[...Array(comment.rating)].map((_, i) => <FaStar key={i} />)}
+
+      {displayList.length > 0 ? (
+        <div className="testimonials-grid">
+          {displayList.map((t, i) => (
+            <div key={i} className="testimonial-card">
+              <div className="t-rating">
+                {[1, 2, 3, 4, 5].map(n => (
+                  <FaStar key={n} color={n <= t.rating ? "#fbbf24" : "#e5e7eb"} size={14} />
+                ))}
               </div>
-              
-              <p className="testimonial-text">
-                "{comment.comment}"
-              </p>
-              
-              <div className="testimonial-footer">
-                <div className="testimonial-avatar">
-                  {comment.userName.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <strong className="testimonial-name">{comment.userName}</strong>
-                  <span className="testimonial-role">{comment.role}</span>
-                </div>
+              <p className="t-text">"{t.text}"</p>
+              <div className="t-author">
+                <span className="t-name">{t.name}</span>
+                <span className="t-role">{t.role}</span>
               </div>
             </div>
           ))}
         </div>
+      ) : (
+        <div className="no-feedback-placeholder" style={{
+          textAlign: "center",
+          color: "rgba(255, 255, 255, 0.4)",
+          margin: "40px auto 60px",
+          fontStyle: "italic",
+          maxWidth: "500px",
+          padding: "30px",
+          background: "rgba(255, 255, 255, 0.01)",
+          borderRadius: "16px",
+          border: "1px dashed rgba(255, 255, 255, 0.06)",
+          fontSize: "15px"
+        }}>
+          No reviews submitted yet. Be the first to share your experience!
+        </div>
       )}
+
+      <div className="feedback-form-container">
+        <h3>Share Your Platform Experience</h3>
+        {msg && <p className="feedback-form-msg">{msg}</p>}
+        {isAuthenticated ? (
+          <form onSubmit={handleSubmit} className="feedback-form">
+            <div className="feedback-stars-selector">
+              <span>Your Rating: </span>
+              {[1, 2, 3, 4, 5].map(n => (
+                <button type="button" key={n} onClick={() => setRating(n)} className="star-btn">
+                  {n <= rating ? <FaStar size={18} color="#fbbf24" /> : <FaRegStar size={18} color="#d1d5db" />}
+                </button>
+              ))}
+            </div>
+            <div className="feedback-input-group">
+              <textarea
+                required
+                value={text}
+                onChange={e => setText(e.target.value)}
+                placeholder="What do you think about EvenTick? Share your experience with us..."
+                rows="3"
+              />
+              <button type="submit" disabled={submitting || !text.trim()} className="feedback-submit-btn">
+                <FaPaperPlane size={11} /> {submitting ? "Sending..." : "Submit Review"}
+              </button>
+            </div>
+          </form>
+        ) : (
+          <p className="feedback-signin-hint">Please <Link to="/login">sign in</Link> to share your thoughts and ratings.</p>
+        )}
+      </div>
     </section>
   );
 };
-
 
 const FooterSection = () => (
   <footer className="footer">
@@ -162,10 +227,10 @@ const FooterSection = () => (
         </Link>
         <p>All-in-one platform for events.</p>
         <div className="socials">
-          <FaInstagram onClick={() => window.open("https://www.instagram.com/the_a.b.h.a.y", "_blank")} />
-          <FaXTwitter onClick={() => window.open("https://www.twitter.com/ABHAYVERMA78471", "_blank")} />
-          <FaLinkedin onClick={() => window.open("https://www.linkedin.com/in/abhay-verma-990735281/", "_blank")} />
-          <FaGithub onClick={() => window.open("https://www.github.com/Abhay-Verma-2005/", "_blank")} />
+          <FaInstagram />
+          <FaTwitter />
+          <FaLinkedin />
+          <FaGithub />
         </div>
       </div>
 

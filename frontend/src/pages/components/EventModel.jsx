@@ -21,13 +21,13 @@ const StarRow = ({ rating }) => (
 );
 
 const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewSubmitted }) => {
-  const [venue, setVenue] = useState(null);
-  const [myTickets, setMyTickets] = useState([]);
+  const [venue, setVenue]           = useState(null);
+  const [myTickets, setMyTickets]   = useState([]);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
   const [cancelling, setCancelling] = useState(null);
-  const [msg, setMsg] = useState({ type: "", text: "" });
+  const [msg, setMsg]               = useState({ type: "", text: "" });
 
   useEffect(() => {
     if (event.venueId?._id) {
@@ -35,8 +35,7 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
     }
     if (isAuthenticated && userRole === "USER") {
       const token = JSON.parse(localStorage.getItem("eventick_user"))?.token;
-      const baseUrl = import.meta.env.VITE_API_URL || "/api/v1";
-      fetch(`${baseUrl}/bookings/my-tickets`, { headers: { Authorization: `Bearer ${token}` } })
+      fetch("/api/v1/bookings/my-tickets", { headers: { Authorization: `Bearer ${token}` } })
         .then(r => r.json())
         .then(tickets => {
           const active = tickets.filter(t => t.eventId?._id === event._id && !t.cancelled);
@@ -64,7 +63,7 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
   };
 
   const handleCancel = async (ticketId) => {
-    if (!window.confirm("Cancel this ticket? Cancellation is only allowed >6 hours before the event.")) return;
+    if (!window.confirm("Cancel this ticket? Cancellation is only allowed >24 hours before the event.")) return;
     setCancelling(ticketId);
     try {
       await cancelTicket(ticketId);
@@ -78,8 +77,8 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
     }
   };
 
-  const photos = [event.bannerImage, ...event.photos].filter(Boolean);
-  const reviews = venue?.reviews || [];
+  const photos    = [event.bannerImage, ...event.photos].filter(Boolean);
+  const reviews   = venue?.reviews || [];
   const avgRating = reviews.length
     ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
     : null;
@@ -91,7 +90,7 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
     : null;
 
   const hasVenuePhoto = Boolean(venue?.images?.[0]);
-  const hasFloorPlan = Boolean(venue?.venueShape);
+  const hasFloorPlan  = Boolean(venue?.venueShape);
 
   return (
     <div className="ev-modal-overlay" onClick={onClose}>
@@ -158,6 +157,7 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
             </div>
           )}
 
+          {/* My Tickets */}
           {myTickets.length > 0 && (
             <div className="ev-tickets">
               <p className="ev-tickets-title">
@@ -177,10 +177,11 @@ const EventModal = ({ event, myId, isAuthenticated, userRole, onClose, onReviewS
                   </div>
                 ))}
               </div>
-              <p className="ev-tickets-note">Cancellation allowed up to 6 hours before the event.</p>
+              <p className="ev-tickets-note">Cancellation allowed up to 24 hours before the event.</p>
             </div>
           )}
 
+          {/* Reviews */}
           {venue && (
             <div className="ev-reviews">
               <p className="ev-reviews-title">

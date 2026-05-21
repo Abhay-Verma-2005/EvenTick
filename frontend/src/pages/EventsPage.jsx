@@ -20,7 +20,6 @@ const EventsPage = () => {
   const [events, setEvents]= useState([]);
   const [loading, setLoading]= useState(true);
   const [cityFilter, setCityFilter]= useState("");
-  const [searchFilter, setSearchFilter]= useState("");
   const [globalMsg, setGlobalMsg]= useState({ type: "", text: "" });
   const [detailEvent, setDetailEvent] = useState(null);
   const [searchParams]= useSearchParams();
@@ -32,14 +31,12 @@ const EventsPage = () => {
 
   useEffect(() => {
     setCityFilter(searchParams.get("city") || "");
-    setSearchFilter(searchParams.get("search") || "");
   }, [searchParams]);
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || "/api/v1";
-      const res  = await fetch(`${baseUrl}/events`);
+      const res  = await fetch("/api/v1/events");
       const data = await res.json();
       setEvents(Array.isArray(data) ? data : []);
     } catch {
@@ -51,15 +48,11 @@ const EventsPage = () => {
 
   useEffect(() => { fetchEvents(); }, [fetchEvents]);
 
-  const filtered = events.filter(e => {
-    const matchesCity = cityFilter.trim() ? e.venueId?.city?.toLowerCase().includes(cityFilter.toLowerCase()) : true;
-    const matchesSearch = searchFilter.trim() ? (
-      e.title.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      e.venueId?.city?.toLowerCase().includes(searchFilter.toLowerCase()) ||
-      e.venueId?.name?.toLowerCase().includes(searchFilter.toLowerCase())
-    ) : true;
-    return matchesCity && matchesSearch;
-  });
+  const filtered = events.filter(e =>
+    cityFilter.trim()
+      ? e.venueId?.city?.toLowerCase().includes(cityFilter.toLowerCase())
+      : true
+  );
 
   const handleLike = async (eventId) => {
     if (!isAuthenticated) return navigate("/login");
@@ -130,7 +123,7 @@ const EventsPage = () => {
           <div className="ev-loading">Loading feed...</div>
         ) : filtered.length === 0 ? (
           <div className="ev-empty">
-            <FaCalendarAlt size={32} color="#ddd6fe" className="evp-empty-icon" />
+            <FaCalendarAlt size={32} color="#ddd6fe" style={{ marginBottom: "12px" }} />
             <p>No events found</p>
             <p>{cityFilter ? `No live events in "${cityFilter}"` : "No live events right now. Check back soon!"}</p>
           </div>

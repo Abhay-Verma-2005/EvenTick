@@ -35,6 +35,7 @@ const SignupPage = () => {
 
   return (
     <div className="login-container">
+
       <div className="left-panel">
         <div className="form-wrapper">
 
@@ -44,7 +45,7 @@ const SignupPage = () => {
           </Link>
 
           <h2 className="title">Create your account</h2>
-          <p className="subtitle">Get started in your Event Journey</p>
+          <p className="subtitle">Get started in less than a minute</p>
 
           {error && <p className="error-box">{error}</p>}
 
@@ -106,8 +107,6 @@ const SignupPage = () => {
     </div>
   );
 };
-
-
 
 const Field = ({ label, type, value, onChange, placeholder }) => (
   <div className="field">
