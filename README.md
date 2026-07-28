@@ -17,7 +17,7 @@
 
 The platform supports multiple user roles including **Ticket Buyers** and **Event Organisers** with dedicated dashboards, personalized features, and AI-powered assistance.
 
-Built with a premium glass-morphism UI, smooth animations, responsive layouts, and dark mode support, EvenTick provides a clean and modern user experience across all devices.
+Built with a premium glass-morphism UI, smooth animations and responsive layouts. EvenTick provides a clean and modern user experience across all devices.
 
 <br>
 
