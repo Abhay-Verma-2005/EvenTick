@@ -189,7 +189,7 @@ npm run dev
 # 👨‍💻 About Developer
 
 ### Abhay Verma
-- B.Tech CSE 3rd Year  
+- B.Tech CSE 4rd Year  
 - GLA University, Mathura  
 
 This project is designed and developed by **Abhay Verma** using the MERN Stack with focus on modern UI, microservices scalability, and real-world event management workflows.
